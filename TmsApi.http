@@ -1,0 +1,11 @@
+@TMSApi_HostAddress = http://localhost:5229
+
+### Exercise 1 - Anonymous Access Should Return 401
+GET {{TMSApi_HostAddress}}/api/assessments/results
+Accept: application/json
+
+###
+
+### Exercise 2 - Worker Smoke Test
+GET {{TMSApi_HostAddress}}/api/enrollments/worker-smoke
+Accept: application/json

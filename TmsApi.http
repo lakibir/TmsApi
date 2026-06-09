@@ -1,0 +1,6 @@
+@TMSApi_HostAddress = http://localhost:5229
+
+
+### Test Anonymous Access to Assessments (Exercise 1 Target)
+GET {{TMSApi_HostAddress}}/api/assessments/results
+Accept: application/json

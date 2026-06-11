@@ -1,11 +1,39 @@
 @TMSApi_HostAddress = http://localhost:5229
 
-### Exercise 1 - Anonymous Access Should Return 401
-GET {{TMSApi_HostAddress}}/api/assessments/results
+### 1. GET All Enrollments (Should yield empty array initially)
+GET {{TMSApi_HostAddress}}/api/enrollments
 Accept: application/json
 
 ###
 
-### Exercise 2 - Worker Smoke Test
-GET {{TMSApi_HostAddress}}/api/enrollments/worker-smoke
+### 2. POST Create New Enrollment (Should return 201 Created with Location Header)
+POST {{TMSApi_HostAddress}}/api/enrollments
+Content-Type: application/json
+
+{
+  "studentId": "S-001",
+  "courseCode": "CS-101"
+}
+
+###
+
+### 3. GET Specific Enrollment by ID (Replace with the 8-char ID returned from Step 2)
+GET {{TMSApi_HostAddress}}/api/enrollments/YOUR_RECORD_ID
+Accept: application/json
+
+###
+
+### 4. DELETE Existing Enrollment
+DELETE {{TMSApi_HostAddress}}/api/enrollments/YOUR_RECORD_ID
+
+###
+
+### 5. GET Deleted Enrollment Again (Should return uniform 404 Not Found JSON)
+GET {{TMSApi_HostAddress}}/api/enrollments/YOUR_RECORD_ID
+Accept: application/json
+
+###
+
+### 6. GET Trigger ProblemDetails Error (Should output clean JSON, no HTML)
+GET {{TMSApi_HostAddress}}/api/error
 Accept: application/json

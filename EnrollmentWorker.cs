@@ -1,23 +1,22 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
-
-namespace TmsApi.Services;
-
-public class EnrollmentWorker
+using TmsApi.Services;
+namespace TmsApi.Workers
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+public class EnrollmentWorker
+    {  private readonly IServiceScopeFactory _scopeFactory;
 
-    public EnrollmentWorker(IServiceScopeFactory scopeFactory)
-    {
-        _scopeFactory = scopeFactory;
-    }
+        public EnrollmentWorker(IServiceScopeFactory scopeFactory)
+        {
+            _scopeFactory = scopeFactory;
+        }
 
-    public void ProcessBatch()
-    {
-        using var scope = _scopeFactory.CreateScope();
-
-        var service = scope.ServiceProvider
-            .GetRequiredService<IEnrollmentService>();
-
-        var count = service.GetAllAsync().Result.Count;
+        public void ProcessBatch()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            
+            var enrollmentService = scope.ServiceProvider.GetRequiredService<IEnrollmentService>();
+        
+        }
     }
 }

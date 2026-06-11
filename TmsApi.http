@@ -31,9 +31,5 @@ DELETE {{TMSApi_HostAddress}}/api/enrollments/YOUR_RECORD_ID
 ### 5. GET Deleted Enrollment Again (Should return uniform 404 Not Found JSON)
 GET {{TMSApi_HostAddress}}/api/enrollments/YOUR_RECORD_ID
 Accept: application/json
-
-###
-
-### 6. GET Trigger ProblemDetails Error (Should output clean JSON, no HTML)
 GET {{TMSApi_HostAddress}}/api/error
 Accept: application/json

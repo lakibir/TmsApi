@@ -6,6 +6,8 @@ using Scalar.AspNetCore; //
 using TmsApi.Configuration;
 using TmsApi.Services;
 using TmsApi.Workers;
+using Microsoft.EntityFrameworkCore;
+using TmsApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(); 
@@ -15,10 +17,14 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<EnrollmentWorker>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddOptions<PaymentOptions>()
+
    .BindConfiguration("Payments") 
     .ValidateDataAnnotations()
     .ValidateOnStart(); 
 builder.Services.AddProblemDetails(); 
+// Register TmsDbContext scoped for incoming HTTP requests
+builder.Services.AddDbContext<TmsDbContext>(options =>
+options.UseNpgsql(builder.Configuration.GetConnectionString("TmsDatabase")));
 builder.Host.UseDefaultServiceProvider(options =>
 {
     options.ValidateScopes = true;

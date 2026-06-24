@@ -18,6 +18,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddSingleton<EnrollmentWorker>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 builder.Services.AddOptions<PaymentOptions>()
+builder.Services.AddScoped<DashboardService>();
 
    .BindConfiguration("Payments") 
     .ValidateDataAnnotations()

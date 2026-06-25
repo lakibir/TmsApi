@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using TMS.Api.Data;
+using TmsApi.Data;
 
-namespace TMS.Api.Services;
+namespace TmsApi.Services;
 
 public class DashboardService
 {
@@ -9,8 +9,8 @@ public class DashboardService
 
     public DashboardService(TmsDbContext db) => _db = db;
 
-    // TODO 1 — Paged student list
-    // OrderBy gives PostgreSQL a stable sort; Skip/Take become OFFSET/LIMIT in SQL.
+    // Exercise 3: Paged student list
+    // SQL: SELECT ... FROM "Students" ORDER BY "Name" LIMIT 20 OFFSET ...
     public Task<List<StudentRow>> GetStudentsPagedAsync(
         int page, int pageSize = 20, CancellationToken ct = default)
     {
@@ -19,24 +19,24 @@ public class DashboardService
                   .OrderBy(s => s.Name)
                   .Skip((page - 1) * pageSize)
                   .Take(pageSize)
-                  .Select(s => new StudentRow(s.Id, s.Name, s.Email))
+                  .Select(s => new StudentRow(s.Id, s.RegistrationNumber, s.Name, s.GPA))
                   .ToListAsync(ct);
     }
 
-    // TODO 2 — Top 5 courses by enrollment count
-    // GroupBy + Count() translate to GROUP BY … ORDER BY … DESC LIMIT 5 in SQL.
+    // Exercise 3: Top 5 courses by enrollment count
+    // SQL: SELECT ... FROM "Enrollments" GROUP BY ... ORDER BY COUNT DESC LIMIT 5
     public Task<List<CourseCountRow>> GetTopCoursesAsync(CancellationToken ct = default)
     {
         return _db.Enrollments
                   .AsNoTracking()
-                  .GroupBy(e => new { e.CourseId, e.Course.Title })
-                  .Select(g => new CourseCountRow(g.Key.CourseId, g.Key.Title, g.Count()))
+                  .GroupBy(e => new { e.CourseId, e.Course.Title, e.Course.Code })
+                  .Select(g => new CourseCountRow(g.Key.CourseId, g.Key.Code, g.Key.Title, g.Count()))
                   .OrderByDescending(r => r.EnrollmentCount)
                   .Take(5)
                   .ToListAsync(ct);
     }
 }
 
-// Lightweight read-only projections (no need for full entity tracking)
-public record StudentRow(int Id, string Name, string Email);
-public record CourseCountRow(int CourseId, string Title, int EnrollmentCount);
+// Lightweight read-only projections
+public record StudentRow(int Id, string RegistrationNumber, string Name, decimal GPA);
+public record CourseCountRow(int CourseId, string Code, string Title, int EnrollmentCount);

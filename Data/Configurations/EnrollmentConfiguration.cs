@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TMS.Api.Models;
+using TmsApi.Entities;
 
-namespace TMS.Api.Data.Configurations;
+namespace TmsApi.Data.Configurations;
 
 public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
 {
@@ -13,18 +13,21 @@ public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
         builder.Property(e => e.Grade)
                .HasPrecision(5, 2);
 
-        builder.Property(e => e.EnrolledOn)
+        builder.Property(e => e.EnrolledAt)
                .IsRequired();
 
-        // Student → Enrollment (one-to-many)
+        builder.Property(e => e.IsArchived)
+               .HasDefaultValue(false);
+
+        // Student → Enrollment
+        // Restrict: enrollment history must not vanish when a student is deleted.
         builder.HasOne(e => e.Student)
                .WithMany(s => s.Enrollments)
                .HasForeignKey(e => e.StudentId)
-               // A student's enrollment history must not vanish when a Course is deleted.
-               // Application code must remove enrollments explicitly before deleting a course.
                .OnDelete(DeleteBehavior.Restrict);
 
-        // Course → Enrollment (one-to-many)
+        // Course → Enrollment
+        // Restrict: grade history must not vanish when a course is retired.
         builder.HasOne(e => e.Course)
                .WithMany(c => c.Enrollments)
                .HasForeignKey(e => e.CourseId)

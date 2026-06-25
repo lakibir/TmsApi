@@ -17,12 +17,15 @@ builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();  
 builder.Services.AddSingleton<EnrollmentWorker>();
 builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
+// FIXED — chain is complete on one statement
 builder.Services.AddOptions<PaymentOptions>()
-builder.Services.AddScoped<DashboardService>();
-
-   .BindConfiguration("Payments") 
+    .BindConfiguration("Payments")
     .ValidateDataAnnotations()
-    .ValidateOnStart(); 
+    .ValidateOnStart();
+
+builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<EnrollmentArchiveService>();
 builder.Services.AddProblemDetails(); 
 // Register TmsDbContext scoped for incoming HTTP requests
 builder.Services.AddDbContext<TmsDbContext>(options =>
